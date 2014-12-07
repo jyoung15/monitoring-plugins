@@ -880,7 +880,11 @@ send_icmp_ping(int sock, struct rta_host *host)
 	hdr.msg_iov = &iov;
 	hdr.msg_iovlen = 1;
 
+#ifdef MSG_CONFIRM
 	len = sendmsg(sock, &hdr, MSG_CONFIRM);
+#else
+	len = sendmsg(sock, &hdr, 0);
+#endif
 
 	if(len < 0 || (unsigned int)len != icmp_pkt_size) {
 		if(debug) printf("Failed to send ping to %s\n",
